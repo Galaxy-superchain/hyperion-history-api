@@ -20,7 +20,7 @@ export function getAmpqUrl(config): string {
 	const u = encodeURIComponent(config.user);
 	const p = encodeURIComponent(config.pass);
 	const v = encodeURIComponent(config.vhost)
-	return `amqp://${u}:${p}@${config.host}/${v}`;
+	return `amqp://${u}:${p}@${config.host}/%2F${v}`;
 }
 
 
@@ -66,7 +66,7 @@ export async function amqpConnect(onReconnect, config, onClose) {
 export async function checkQueueSize(q_name, config) {
 	try {
 		const v = encodeURIComponent(config.vhost);
-		const apiUrl = `http://${config.api}/api/queues/${v}/${encodeURIComponent(q_name)}`;
+		const apiUrl = `http://${config.api}/api/queues/%2F${v}/${encodeURIComponent(q_name)}`;
 		const opts = {
 			username: config.user,
 			password: config.pass

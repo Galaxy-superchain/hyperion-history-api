@@ -471,12 +471,14 @@ function timePointSecToDate(sec) {
 exports.timePointSecToDate = timePointSecToDate;
 /** Convert date in ISO format to `block_timestamp_type` (half-seconds since a different epoch) */
 function dateToBlockTimestamp(date) {
-    return Math.round((checkDateParse(date + 'Z') - 946684800000) / 500);
+    //return Math.round((checkDateParse(date + 'Z') - 946684800000) / 500);
+    return Math.round((checkDateParse(date + 'Z') - 946684800000) / 3000);
 }
 exports.dateToBlockTimestamp = dateToBlockTimestamp;
 /** Convert `block_timestamp_type` (half-seconds since a different epoch) to to date in ISO format */
 function blockTimestampToDate(slot) {
-    var s = (new Date(slot * 500 + 946684800000)).toISOString();
+    //var s = (new Date(slot * 500 + 946684800000)).toISOString();
+    var s = (new Date(slot * 3000 + 946684800000)).toISOString();
     return s.substr(0, s.length - 1);
 }
 exports.blockTimestampToDate = blockTimestampToDate;
