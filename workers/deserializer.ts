@@ -30,6 +30,18 @@ function extractDeltaStruct(deltas) {
     return deltaStruct;
 }
 
+function quickFixBlockTs(block_ts) {
+    try {
+        // same formula as Serialize.dateToBlockTimestamp, with 500 instead of 3000
+        const blockTimestamp = Math.round((Date.parse(block_ts + 'Z') - 946684800000) / 500);
+
+        // blockTimestampToDate formula already uses 3000 instead of 500
+        return Serialize.blockTimestampToDate(blockTimestamp);
+    } catch (e) {
+        return block_ts;
+    }
+}
+
 export default class MainDSWorker extends HyperionWorker {
 
     ch_ready = false;
@@ -219,8 +231,10 @@ export default class MainDSWorker extends HyperionWorker {
             let ts = '';
             const block_num = res['this_block']['block_num'];
             const block_id = res['this_block']['block_id'].toLowerCase();
-            let block_ts = res['this_time'];
             let light_block;
+
+            let block_ts = res['this_time'];
+            block_ts = quickFixBlockTs(block_ts); // quick 'fix'
 
             if (this.conf.indexer.fetch_block) {
 
@@ -229,6 +243,9 @@ export default class MainDSWorker extends HyperionWorker {
                 }
 
                 producer = block['producer'];
+
+                block['timestamp'] = quickFixBlockTs(block['timestamp']);
+
                 ts = block['timestamp'];
                 block_ts = ts;
 
